@@ -1,0 +1,45 @@
+# Dependencies and build output
+.m2/
+.npm-cache/
+**/node_modules/
+frontend/dist/
+backend/target/
+
+# Local data and uploads
+backend/data/
+*.mv.db
+*.trace.db
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Runtime output
+*.log
+api-response.json
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Test and tooling caches
+coverage/
+.eslintcache
+.vite/
+
+# Legacy scaffold files retained only in the local working folder
+backend/package.json
+backend/package-lock.json
+backend/vite.config.js
+backend/index.html
+backend/public/
+backend/README.md
+frontend/README.md
+backend/src/main/resources/data1.sql
