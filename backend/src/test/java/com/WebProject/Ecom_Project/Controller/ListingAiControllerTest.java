@@ -30,4 +30,14 @@ class ListingAiControllerTest {
         assertThat(ListingAiController.buildUserPrompt(request))
                 .contains("Not provided");
     }
+
+    @Test
+    void providerFailuresReturnActionableMessages() {
+        assertThat(ListingAiController.providerFailureMessage(
+                new RuntimeException("401 invalid_api_key")))
+                .contains("rejected the API key");
+        assertThat(ListingAiController.providerFailureMessage(
+                new RuntimeException("429 insufficient_quota")))
+                .contains("quota or rate limit");
+    }
 }

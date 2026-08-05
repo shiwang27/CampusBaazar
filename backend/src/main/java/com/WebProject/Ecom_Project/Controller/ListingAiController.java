@@ -52,8 +52,35 @@ public class ListingAiController {
         } catch (Exception error) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_GATEWAY,
-                    "The description assistant is temporarily unavailable");
+                    providerFailureMessage(error));
         }
+    }
+
+    static String providerFailureMessage(Throwable error) {
+        StringBuilder details = new StringBuilder();
+        for (Throwable current = error; current != null; current = current.getCause()) {
+            details.append(' ').append(current.getClass().getSimpleName());
+            if (current.getMessage() != null) details.append(' ').append(current.getMessage());
+        }
+        String message = details.toString().toLowerCase();
+        if (message.contains("invalid_api_key") || message.contains("incorrect api key")
+                || message.contains("unauthorized") || message.contains("401")) {
+            return "OpenAI rejected the API key. Set a new OPENAI_API_KEY and restart the backend";
+        }
+        if (message.contains("insufficient_quota") || message.contains("quota")
+                || message.contains("rate limit") || message.contains("429")) {
+            return "OpenAI quota or rate limit reached. Check billing and usage, then try again";
+        }
+        if (message.contains("forbidden") || message.contains("403")) {
+            return "The configured OpenAI account cannot access the selected model";
+        }
+        if (message.contains("timeout") || message.contains("timed out")) {
+            return "OpenAI took too long to respond. Please try again";
+        }
+        if (message.contains("connection refused") || message.contains("unknown host")) {
+            return "The backend could not connect to OpenAI. Check the network connection";
+        }
+        return "The description assistant is temporarily unavailable";
     }
 
     static String buildUserPrompt(SuggestionRequest request) {
