@@ -13,6 +13,12 @@ async function request(path, options = {}) {
   } catch {
     throw new Error('CampusBaazar services are offline. Please try again in a moment.')
   }
+  if (response.status === 401) {
+    localStorage.removeItem('campusbaazar-token')
+    localStorage.removeItem('campusbaazar-user')
+    window.dispatchEvent(new Event('campusbaazar-auth-expired'))
+    throw new Error('Your session expired. Please sign in again.')
+  }
   if (!response.ok) {
     const contentType = response.headers.get('content-type') || ''
     const payload = contentType.includes('application/json') ? await response.json() : await response.text()

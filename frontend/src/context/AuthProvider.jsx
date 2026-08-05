@@ -28,6 +28,11 @@ export default function AuthProvider({ children }) {
   }, [])
 
   useEffect(() => {
+    window.addEventListener('campusbaazar-auth-expired', logout)
+    return () => window.removeEventListener('campusbaazar-auth-expired', logout)
+  }, [logout])
+
+  useEffect(() => {
     if (!token) return
     authApi.me().then(saveSession).catch(logout)
   }, [logout, saveSession, token])
