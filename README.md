@@ -33,7 +33,7 @@ This project began as a full redesign of my earlier academic e-commerce backend.
 | --- | --- |
 | Frontend | React 19, Vite, Lucide icons, CSS |
 | Backend | Java 21, Spring Boot 3, Spring Security |
-| AI | Spring AI with an optional OpenAI chat model |
+| AI | Spring AI with an optional Google Gemini model |
 | Data | Spring Data JPA, Hibernate, H2 |
 | Authentication | JWT with role-based authorization |
 | Build tools | npm, Maven Wrapper |
@@ -78,8 +78,8 @@ To enable the optional seller description assistant:
 
 ```powershell
 $env:APP_AI_ENABLED="true"
-$env:OPENAI_API_KEY="your-api-key"
-$env:OPENAI_MODEL="gpt-4o-mini"
+$env:GEMINI_API_KEY="your-google-ai-studio-key"
+$env:GEMINI_MODEL="gemini-2.5-flash"
 ```
 
 The API key stays on the backend and is never sent to the browser. Without these variables, the rest of CampusBaazar continues to run normally.

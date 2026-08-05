@@ -1,9 +1,9 @@
 package com.WebProject.Ecom_Project.Config;
 
+import com.google.genai.Client;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.openai.OpenAiChatModel;
-import org.springframework.ai.openai.OpenAiChatOptions;
-import org.springframework.ai.openai.api.OpenAiApi;
+import org.springframework.ai.google.genai.GoogleGenAiChatModel;
+import org.springframework.ai.google.genai.GoogleGenAiChatOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -16,20 +16,20 @@ public class AiConfig {
 
     @Bean
     public ChatClient campusBaazarChatClient(
-            @Value("${app.ai.openai-api-key:}") String apiKey,
-            @Value("${app.ai.model:gpt-4o-mini}") String modelName) {
-        Assert.hasText(apiKey, "OPENAI_API_KEY is required when APP_AI_ENABLED=true");
+            @Value("${app.ai.gemini-api-key:}") String apiKey,
+            @Value("${app.ai.model:gemini-2.5-flash}") String modelName) {
+        Assert.hasText(apiKey, "GEMINI_API_KEY is required when APP_AI_ENABLED=true");
 
-        OpenAiApi openAiApi = OpenAiApi.builder()
+        Client genAiClient = Client.builder()
                 .apiKey(apiKey)
                 .build();
-        OpenAiChatOptions options = OpenAiChatOptions.builder()
+        GoogleGenAiChatOptions options = GoogleGenAiChatOptions.builder()
                 .model(modelName)
                 .temperature(0.35)
-                .maxTokens(220)
+                .maxOutputTokens(220)
                 .build();
-        OpenAiChatModel chatModel = OpenAiChatModel.builder()
-                .openAiApi(openAiApi)
+        GoogleGenAiChatModel chatModel = GoogleGenAiChatModel.builder()
+                .genAiClient(genAiClient)
                 .defaultOptions(options)
                 .build();
 

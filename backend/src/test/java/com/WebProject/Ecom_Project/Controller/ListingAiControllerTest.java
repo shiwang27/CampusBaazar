@@ -34,7 +34,7 @@ class ListingAiControllerTest {
     @Test
     void providerFailuresReturnActionableMessages() {
         assertThat(ListingAiController.providerFailureMessage(
-                new RuntimeException("401 invalid_api_key")))
+                new RuntimeException("400 API_KEY_INVALID")))
                 .contains("rejected the API key");
         assertThat(ListingAiController.providerFailureMessage(
                 new RuntimeException("429 insufficient_quota")))

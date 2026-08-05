@@ -63,22 +63,23 @@ public class ListingAiController {
             if (current.getMessage() != null) details.append(' ').append(current.getMessage());
         }
         String message = details.toString().toLowerCase();
-        if (message.contains("invalid_api_key") || message.contains("incorrect api key")
+        if (message.contains("invalid_api_key") || message.contains("api_key_invalid")
+                || message.contains("api key not valid") || message.contains("incorrect api key")
                 || message.contains("unauthorized") || message.contains("401")) {
-            return "OpenAI rejected the API key. Set a new OPENAI_API_KEY and restart the backend";
+            return "Gemini rejected the API key. Set a new GEMINI_API_KEY and restart the backend";
         }
         if (message.contains("insufficient_quota") || message.contains("quota")
                 || message.contains("rate limit") || message.contains("429")) {
-            return "OpenAI quota or rate limit reached. Check billing and usage, then try again";
+            return "Gemini API quota or rate limit reached. Check Google AI Studio usage, then try again";
         }
         if (message.contains("forbidden") || message.contains("403")) {
-            return "The configured OpenAI account cannot access the selected model";
+            return "The configured Gemini account cannot access the selected model";
         }
         if (message.contains("timeout") || message.contains("timed out")) {
-            return "OpenAI took too long to respond. Please try again";
+            return "Gemini took too long to respond. Please try again";
         }
         if (message.contains("connection refused") || message.contains("unknown host")) {
-            return "The backend could not connect to OpenAI. Check the network connection";
+            return "The backend could not connect to Gemini. Check the network connection";
         }
         return "The description assistant is temporarily unavailable";
     }
