@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { ImagePlus, LoaderCircle, UploadCloud, X } from 'lucide-react'
+import { ImagePlus, LoaderCircle, Sparkles, UploadCloud, X } from 'lucide-react'
+import { aiApi } from '../api/products'
 
 const initialForm = { name: '', category: 'Textbooks', price: '', stockQuantity: '1', itemCondition: 'Good', brand: '', description: '', sellerName: '', sellerContact: '', institution: '', location: '' }
 function todayForApi() {
@@ -13,6 +14,8 @@ export default function SellModal({ onClose, onSubmit }) {
   const [preview, setPreview] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [generatingDescription, setGeneratingDescription] = useState(false)
+  const [aiMessage, setAiMessage] = useState('')
   useEffect(() => () => preview && URL.revokeObjectURL(preview), [preview])
   const update = (field) => (event) => setForm((current) => ({ ...current, [field]: event.target.value }))
 
@@ -22,6 +25,30 @@ export default function SellModal({ onClose, onSubmit }) {
     if (file.size > 5 * 1024 * 1024) { setError('Please choose an image smaller than 5 MB.'); return }
     if (preview) URL.revokeObjectURL(preview)
     setImage(file); setPreview(URL.createObjectURL(file)); setError('')
+  }
+
+  async function generateDescription() {
+    if (form.name.trim().length < 3) {
+      setAiMessage('Add the item title first.')
+      return
+    }
+    setGeneratingDescription(true)
+    setAiMessage('')
+    try {
+      const result = await aiApi.suggestDescription({
+        name: form.name,
+        category: form.category,
+        itemCondition: form.itemCondition,
+        brand: form.brand,
+        existingDescription: form.description,
+      })
+      setForm((current) => ({ ...current, description: result.description }))
+      setAiMessage('AI draft added. Review the details before publishing.')
+    } catch (requestError) {
+      setAiMessage(requestError.message || 'The description assistant is unavailable right now.')
+    } finally {
+      setGeneratingDescription(false)
+    }
   }
 
   async function submit(event) {
@@ -53,7 +80,7 @@ export default function SellModal({ onClose, onSubmit }) {
             <label className="field"><span>Price (INR)</span><input required min="0" step="1" type="number" value={form.price} onChange={update('price')} placeholder="450" /></label>
             <label className="field"><span>Quantity available</span><input required min="1" max="999" step="1" type="number" value={form.stockQuantity} onChange={update('stockQuantity')} /></label>
             <label className="field"><span>Author / brand</span><input value={form.brand} onChange={update('brand')} placeholder="Publisher or brand" /></label>
-            <label className="field full"><span>Description</span><textarea required rows="3" maxLength="500" value={form.description} onChange={update('description')} placeholder="Mention edition, markings, accessories and anything a buyer should know." /></label>
+            <label className="field full description-field"><span className="description-label"><span>Description</span><button type="button" onClick={generateDescription} disabled={generatingDescription || form.name.trim().length < 3}>{generatingDescription ? <LoaderCircle className="spin" size={15} /> : <Sparkles size={15} />}{form.description ? 'Improve with AI' : 'Draft with AI'}</button></span><textarea required rows="4" maxLength="500" value={form.description} onChange={update('description')} placeholder="Mention edition, markings, accessories and anything a buyer should know." />{aiMessage && <small className="ai-message" role="status">{aiMessage}</small>}</label>
             <label className="field"><span>Your name</span><input required value={form.sellerName} onChange={update('sellerName')} placeholder="First name is enough" /></label>
             <label className="field"><span>Email or WhatsApp</span><input required value={form.sellerContact} onChange={update('sellerContact')} placeholder="student@email.com" /></label>
             <label className="field"><span>College / school</span><input required value={form.institution} onChange={update('institution')} placeholder="Your institution" /></label>

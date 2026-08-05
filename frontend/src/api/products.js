@@ -34,6 +34,13 @@ export function createProduct(product, imageFile) {
   return request('/product', { method: 'POST', body })
 }
 
+export const aiApi = {
+  suggestDescription: (details) => request('/ai/listing-description', {
+    method: 'POST',
+    body: JSON.stringify(details),
+  }),
+}
+
 export const authApi = {
   login: (credentials) => request('/auth/login', { method: 'POST', body: JSON.stringify(credentials) }),
   register: (profile) => request('/auth/register', { method: 'POST', body: JSON.stringify(profile) }),

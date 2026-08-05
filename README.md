@@ -18,6 +18,7 @@ This project began as a full redesign of my earlier academic e-commerce backend.
 - JWT authentication with student and administrator roles
 - Search, categories, campus filters, saved items, cart, and buy-now flow
 - Seller listings with image uploads, condition, pickup location, price, and quantity
+- Optional Spring AI assistant that drafts editable, fact-based product descriptions
 - Stock-aware cart controls and server-side inventory validation
 - Buyer requests that sellers can accept, decline, and mark completed
 - Automatic inventory reduction and sold-state handling
@@ -32,6 +33,7 @@ This project began as a full redesign of my earlier academic e-commerce backend.
 | --- | --- |
 | Frontend | React 19, Vite, Lucide icons, CSS |
 | Backend | Java 21, Spring Boot 3, Spring Security |
+| AI | Spring AI with an optional OpenAI chat model |
 | Data | Spring Data JPA, Hibernate, H2 |
 | Authentication | JWT with role-based authorization |
 | Build tools | npm, Maven Wrapper |
@@ -72,6 +74,16 @@ $env:APP_ADMIN_PASSWORD="choose-a-strong-password"
 
 `APP_ADMIN_EMAIL` and `APP_ADMIN_PASSWORD` are optional. When both are provided, CampusBaazar creates an administrator on first start.
 
+To enable the optional seller description assistant:
+
+```powershell
+$env:APP_AI_ENABLED="true"
+$env:OPENAI_API_KEY="your-api-key"
+$env:OPENAI_MODEL="gpt-4o-mini"
+```
+
+The API key stays on the backend and is never sent to the browser. Without these variables, the rest of CampusBaazar continues to run normally.
+
 ### 2. Start the API
 
 ```powershell
@@ -109,6 +121,7 @@ Open `http://localhost:5176`. Vite proxies `/api` requests to the backend.
 | `POST` | `/api/auth/login` | Sign in and receive a JWT |
 | `GET` | `/api/products` | Browse marketplace listings |
 | `POST` | `/api/product` | Publish a listing |
+| `POST` | `/api/ai/listing-description` | Draft an editable seller description |
 | `POST` | `/api/orders` | Send a purchase request |
 | `PATCH` | `/api/profile/sales/status` | Accept, decline, or complete a request |
 | `GET` | `/api/profile/purchases` | View buyer request statuses |
@@ -140,4 +153,3 @@ cd backend
 ## License
 
 CampusBaazar is available under the [MIT License](LICENSE).
-
