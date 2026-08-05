@@ -13,6 +13,10 @@ async function request(path, options = {}) {
   } catch {
     throw new Error('CampusBaazar services are offline. Please try again in a moment.')
   }
+  if (response.status === 401 && path === '/auth/login') {
+    const payload = await response.json().catch(() => null)
+    throw new Error(payload?.message || 'Incorrect email or password.')
+  }
   if (response.status === 401) {
     localStorage.removeItem('campusbaazar-token')
     localStorage.removeItem('campusbaazar-user')

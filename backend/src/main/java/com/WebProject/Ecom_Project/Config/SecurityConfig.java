@@ -30,7 +30,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(UserRepo userRepo) {
-        return username -> userRepo.findByEmailIgnoreCase(username)
+        return username -> userRepo.findByEmailIgnoreCaseOrCollegeEmailIgnoreCase(username, username)
                 .orElseThrow(() -> new UsernameNotFoundException("Account not found"));
     }
 

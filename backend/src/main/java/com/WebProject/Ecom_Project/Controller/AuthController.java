@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,10 +60,16 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthRequests.Response login(@Valid @RequestBody AuthRequests.Login request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-        AppUser user = userRepo.findByEmailIgnoreCase(request.email())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        String email = request.email().trim().toLowerCase();
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, request.password()));
+        } catch (AuthenticationException error) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password");
+        }
+        AppUser user = userRepo.findByEmailIgnoreCaseOrCollegeEmailIgnoreCase(email, email)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED, "Incorrect email or password"));
         return response(user, jwtService.generateToken(user));
     }
 
