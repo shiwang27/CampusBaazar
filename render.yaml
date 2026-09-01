@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: campusbaazar-backend
+    runtime: docker
+    rootDir: backend
+    plan: free
+    envVars:
+      - key: APP_JWT_SECRET
+        generateValue: true
+      - key: APP_AI_ENABLED
+        value: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: APP_CORS_ALLOWED_ORIGIN_PATTERNS
+        value: http://localhost:*,http://127.0.0.1:*,https://*.vercel.app
