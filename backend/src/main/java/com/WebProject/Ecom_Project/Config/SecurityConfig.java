@@ -28,7 +28,7 @@ import java.util.Map;
 
 @Configuration
 public class SecurityConfig {
-    @Value("${app.cors.allowed-origin-patterns}")
+    @Value("${app.cors.allowed-origin-patterns:http://localhost:*,http://127.0.0.1:*}")
     private List<String> allowedOriginPatterns;
 
     @Bean
