@@ -26,7 +26,7 @@ public class AiConfig {
         GoogleGenAiChatOptions options = GoogleGenAiChatOptions.builder()
                 .model(modelName)
                 .temperature(0.35)
-                .maxOutputTokens(220)
+                .maxOutputTokens(512)
                 .build();
         GoogleGenAiChatModel chatModel = GoogleGenAiChatModel.builder()
                 .genAiClient(genAiClient)
