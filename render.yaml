@@ -4,6 +4,8 @@ services:
     runtime: docker
     rootDir: backend
     plan: free
+    healthCheckPath: /api/health
+    autoDeploy: true
     envVars:
       - key: APP_JWT_SECRET
         generateValue: true
